@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer } from "react";
+import React, { createContext, useContext, useEffect, useReducer } from "react";
 import { backendUrl } from "../../config";
 import AuthContext from "../Authentication/Auth.provider";
 import { ProductsReducer } from "./Product.reducer";
@@ -53,12 +53,30 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
       });
   };
 
+  const getFilteredProducts = async (company: string) => {
+    dispatch({ type: "LOADING" });
+    await fetch(`${backendUrl}/item/?company=${company}`)
+      .then((res) => res.json())
+      .then((res) => {
+        console.log({ res });
+        dispatch({ type: "GET_ALL_PRODUCTS", payload: res.items });
+      })
+      .catch((err) => {
+        console.log({ err });
+      });
+  };
+
+  useEffect(() => {
+    getCompanies();
+  }, []);
+
   return (
     <ProductsContext.Provider
       value={{
         ...state,
         getAllProducts,
         getCompanies,
+        getFilteredProducts,
       }}
     >
       {children}

@@ -24,7 +24,7 @@ export const AllProducts: React.FC<AllProductsProps> = ({}) => {
           columns={{ xs: 4, sm: 8, md: 12 }}
         >
           {products.map((product: any) => (
-            <Grid item lg={3} xs={12} sm={4} key={product._id}>
+            <Grid item xs={12} sm={4} lg={3} key={product._id}>
               <ProductCard product={product} />
             </Grid>
           ))}

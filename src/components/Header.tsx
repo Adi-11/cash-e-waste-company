@@ -24,15 +24,6 @@ export const Header: React.FC<HeaderProps> = () => {
               Home
             </button>
           </Link>
-          {isAuthenticated && user.permissions[0] === "*" && (
-            <Link to="/admin" className="mainTitle">
-              <button
-                className={"text-white text-md font-semibold cursor-pointer"}
-              >
-                Manage Items
-              </button>
-            </Link>
-          )}
         </div>
 
         <div className={" flex items-center justify-center text-primary"}>
@@ -43,12 +34,6 @@ export const Header: React.FC<HeaderProps> = () => {
               </p>
               <ProfileMenu />
             </>
-          )}
-          {!isAuthenticated && (
-            // login button
-            <Link to="/login">
-              <button className={"btn-home"}>Login</button>
-            </Link>
           )}
         </div>
       </div>
