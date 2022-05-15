@@ -1,5 +1,5 @@
 import { useSnackbar } from "notistack";
-import React, { createContext, useEffect, useReducer } from "react";
+import React, { createContext, useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { backendUrl } from "../../config";
 import { AuthReducer } from "./Auth.reducer";
@@ -10,6 +10,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
+import { LoginComp } from "../../components/Login";
 
 const provider = new GoogleAuthProvider();
 
@@ -39,6 +40,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(AuthReducer, initialState);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem("token")
+  );
 
   const userLogin = async (
     data: { email: string; password: string },
@@ -115,6 +119,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           type: "LOGIN",
           payload: { user: res.user, token: res.token },
         });
+        setToken(res.token);
         enqueueSnackbar("Login successful", {
           variant: "success",
           autoHideDuration: 3000,
@@ -140,7 +145,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     })
       .then((res) => res.json())
       .then((res) => {
-        if (res.err) {
+        if (res.error) {
+          localStorage.clear();
           throw new Error(res.message);
         }
         localStorage.setItem("user", JSON.stringify(res.user));
@@ -163,15 +169,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     dispatch({
       type: "LOGOUT",
     });
-    navigate("/");
+    setToken(null);
+    // navigate("/");
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
     if (token) {
       getUserProfile();
     }
-  }, []);
+  }, [token]);
 
   return (
     <AuthContext.Provider
@@ -186,7 +192,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         } as any
       }
     >
-      {children}
+      {token ? children : <LoginComp />}
     </AuthContext.Provider>
   );
 };

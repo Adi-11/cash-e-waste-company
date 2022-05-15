@@ -47,7 +47,7 @@ export const OrderProvider: React.FC<OrderProviderProps> = ({ children }) => {
 
   const addOrder = async (data: any) => {
     dispatch({ type: "LOADING" });
-    await fetch(`${backendUrl}/user-order/create`, {
+    await fetch(`${backendUrl}/company-order/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -40,25 +40,6 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
       });
   };
 
-  const addProduct = async (data: any) => {
-    dispatch({ type: "LOADING" });
-    await fetch(`${backendUrl}/item/add`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `${token}`,
-      },
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        dispatch({ type: "ADD_PRODUCT", payload: data });
-      })
-      .catch((err) => {
-        console.log({ err });
-      });
-  };
-
   const getCompanies = async () => {
     dispatch({ type: "LOADING" });
     await fetch(`${backendUrl}/item/companies`)
@@ -77,7 +58,6 @@ export const ProductsProvider: React.FC<ProductsProviderProps> = ({
       value={{
         ...state,
         getAllProducts,
-        addProduct,
         getCompanies,
       }}
     >

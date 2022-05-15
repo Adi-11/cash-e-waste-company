@@ -193,7 +193,7 @@
   transform: translate(-50%, -50%);
 }
 .MuiPaper-root {
-  background-color: var(--color-darkwave) !important;
+  background-color: #eef1fc !important;
 }
 
 .btn-sm {
