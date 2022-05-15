@@ -23,7 +23,7 @@ interface OrderProviderProps {
 }
 
 export const OrderProvider: React.FC<OrderProviderProps> = ({ children }) => {
-  const { token } = useContext(AuthContext);
+  const { token, user } = useContext(AuthContext);
   const [state, dispatch] = useReducer(OrderReducer, initialState);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -68,13 +68,36 @@ export const OrderProvider: React.FC<OrderProviderProps> = ({ children }) => {
     })
       .then((res) => res.json())
       .then((res) => {
-        dispatch({ type: "ADD_ORDER", payload: res.order });
-        enqueueSnackbar(
-          "Order Placed Successfully! Our delivery partner will contact soon",
-          {
-            variant: "success",
-          }
-        );
+        const options = {
+          key: process.env.REACT_APP_RAZORPAY_KEY,
+          name: "Cash-E-Waste",
+          description: "Cash-E-Waste",
+          order_id: res.order.orderId,
+          handler: () => {
+            enqueueSnackbar("Check your mail for payment status", {
+              variant: "info",
+            });
+            dispatch({ type: "ADD_ORDER", payload: res.order });
+            enqueueSnackbar(
+              "Order Placed Successfully! Our delivery partner will contact soon",
+              {
+                variant: "success",
+              }
+            );
+          },
+          prefill: {
+            email: user?.email,
+          },
+          notes: {
+            note: "Session will expire in 10 mins",
+          },
+          theme: {
+            color: "rgb(149, 8, 8)",
+          },
+        };
+        const _window = window as any;
+        const paymentObject = new _window.Razorpay(options);
+        paymentObject.open();
       })
       .catch((err) => {
         console.log({ err });
