@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import { FaSignOutAlt } from "react-icons/fa";
 import { NavLink as Link } from "react-router-dom";
 import AuthContext from "../context/Authentication/Auth.provider";
 import ProfileMenu from "./ProfileMenu";
@@ -7,7 +6,7 @@ import ProfileMenu from "./ProfileMenu";
 interface HeaderProps {}
 
 export const Header: React.FC<HeaderProps> = () => {
-  const { isAuthenticated, user, logout } = useContext<any>(AuthContext);
+  const { isAuthenticated, user } = useContext<any>(AuthContext);
   return (
     <div className="h-9 px-14 py-8 w-full flex justify-end bg-primary shadow-sm rounded-b-sm">
       <div className="flex justify-between items-center h-full w-full">

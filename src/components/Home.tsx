@@ -24,7 +24,7 @@ export const Home: React.FC<HomeProps> = ({}) => {
   return (
     <>
       <Header />
-      <div className="flex items-center justify-between px-8">
+      <div className="flex items-center justify-between px-8 relative">
         <p className="text-center my-4 font-bold text-3xl">
           All Product available
         </p>

@@ -47,13 +47,24 @@ export const OrderProvider: React.FC<OrderProviderProps> = ({ children }) => {
 
   const addOrder = async (data: any) => {
     dispatch({ type: "LOADING" });
+
+    const d = data.map((item: any) => {
+      return {
+        _id: item._id,
+        quantity: item.quantity,
+      };
+    });
+    let body = {
+      items: [...d],
+    };
+
     await fetch(`${backendUrl}/company-order/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `${token}`,
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(body),
     })
       .then((res) => res.json())
       .then((res) => {

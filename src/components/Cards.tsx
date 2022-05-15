@@ -1,20 +1,15 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
-import Collapse from "@mui/material/Collapse";
 import Avatar from "@mui/material/Avatar";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { GiTwoCoins, GiPriceTag, GiStack } from "react-icons/gi";
+import { GrAdd, GrSubtract, GrCart } from "react-icons/gr";
+import { useSnackbar } from "notistack";
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -33,9 +28,56 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
 
 interface ProductCardProps {
   product: any;
+  addToCart: any;
+  handleIncreaseProductCount: any;
+  handleDecreaseProductCount: any;
+  cartItem: any;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  addToCart,
+  handleDecreaseProductCount,
+  handleIncreaseProductCount,
+  cartItem,
+}) => {
+  const [count, setCount] = useState(1);
+  const [showCart, setShowCart] = useState(true);
+  const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    if (cartItem.length === 0) {
+      setShowCart(true);
+      setCount(1);
+    }
+  }, [cartItem]);
+
+  const handleIncrease = () => {
+    if (count < product.stock) {
+      setCount(count + 1);
+    }
+    handleIncreaseProductCount(product._id);
+  };
+
+  const handleDecrease = () => {
+    setCount(count - 1);
+    if (count <= 0) {
+      setShowCart(true);
+      setCount(1);
+      return;
+    }
+    handleDecreaseProductCount(product._id);
+  };
+
+  const handleAddToCart = () => {
+    if (count < product.stock) {
+      addToCart(product);
+      setShowCart(false);
+    } else {
+      enqueueSnackbar("Out of stock", { variant: "error" });
+    }
+  };
+
   return (
     <Card sx={{ backgroundColor: "white", margin: "auto" }}>
       <CardHeader
@@ -45,9 +87,32 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </Avatar>
         }
         action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
+          <div className="flex items-center justify-center bg-accent px-1 py-0.5 rounded-sm ">
+            {showCart ? (
+              <div
+                className="p-0.5 cursor-pointer"
+                onClick={() => handleAddToCart()}
+              >
+                <GrCart size={20} />
+              </div>
+            ) : (
+              <>
+                <div
+                  className="px-0.5 cursor-pointer"
+                  onClick={() => handleIncrease()}
+                >
+                  <GrAdd size={15} />
+                </div>
+                <div className="px-0.5">{count}</div>
+                <div
+                  className="px-0.5 cursor-pointer"
+                  onClick={() => handleDecrease()}
+                >
+                  <GrSubtract size={15} />
+                </div>
+              </>
+            )}
+          </div>
         }
         title={`${product.name}`}
         subheader={`${product.company}`}
