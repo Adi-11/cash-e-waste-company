@@ -29,7 +29,7 @@ export const OrderProvider: React.FC<OrderProviderProps> = ({ children }) => {
 
   const getAllOrders = async () => {
     dispatch({ type: "LOADING" });
-    await fetch(`${backendUrl}/user-order/my`, {
+    await fetch(`${backendUrl}/company-order/my`, {
       method: "GET",
       headers: {
         Authorization: `${token}`,
