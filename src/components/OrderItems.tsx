@@ -17,10 +17,6 @@ const OrderItems: React.FC<ProfileProps> = ({ items }) => {
                 {item.itemName}
               </Typography>
               <Typography>
-                <span className="font-bold text-primary">Coins:</span>{" "}
-                {item.coins}
-              </Typography>
-              <Typography>
                 <span className="font-bold text-primary">Quantity:</span>{" "}
                 {item.quantity}
               </Typography>
